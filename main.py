@@ -8,7 +8,7 @@ def menu():
     print("1. Add a new exam")
     print("2. View exams & countdowns")
     print("3. Send email reminders")
-    print("4. Send SMS reminders")
+    # print("4. Send SMS reminders") # Temporarily disabled
     print("5. Exit")
 
 def handle_add_exam():
@@ -48,7 +48,8 @@ def main():
         elif choice == "3":
             handle_email()
         elif choice == "4":
-            handle_sms()
+            # handle_sms()  # Disabled for now
+            print("SMS feature temporarily disabled.")
         elif choice == "5":
             print("Goodbye 👋")
             break
