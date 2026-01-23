@@ -1,26 +1,25 @@
 from datetime import datetime
 from app.modules.exams.service import get_all_exams
 
-def days_until(date_str):
-    target = datetime.strptime(date_str, "%Y-%m-%d")
-    today = datetime.now()
-    return (target - today).days
 
 def show_countdowns():
     exams = get_all_exams()
+    today = datetime.today()
 
     if not exams:
         print("No exams found.")
         return
 
     for exam in exams:
-        course = exam[1]
-        exam_date = exam[2]
-        signup_start = exam[3]
-        signup_end = exam[4]
+        course, exam_date, signup_start, signup_end, notes = exam
 
-        print("\n---------------------------")
+        exam_dt = datetime.strptime(exam_date, "%Y-%m-%d")
+        days_left = (exam_dt - today).days
+
+        print("\n-----------------------------")
         print(f"Course: {course}")
-        print(f"Days until signup opens: {days_until(signup_start)}")
-        print(f"Days until signup closes: {days_until(signup_end)}")
-        print(f"Days until exam: {days_until(exam_date)}")
+        print(f"Exam Date: {exam_date} ({days_left} days left)")
+        print(f"Signup opens: {signup_start}")
+        print(f"Signup closes: {signup_end}")
+        if notes:
+            print(f"Notes: {notes}")

@@ -12,14 +12,19 @@ def menu():
     print("5. Exit")
 
 def handle_add_exam():
-    course = input("Course name: ")
-    exam_date = input("Exam date (YYYY-MM-DD): ")
-    signup_start = input("Signup start date (YYYY-MM-DD): ")
-    signup_end = input("Signup end date (YYYY-MM-DD): ")
-    notes = input("Notes (optional): ")
+    try:
+        course = input("Course name: ")
+        exam_date = input("Exam date (YYYY-MM-DD): ")
+        notes = input("Notes (optional): ")
 
-    add_exam(course, exam_date, signup_start, signup_end, notes)
-    print("✅ Exam added successfully")
+        add_exam(course, exam_date, notes)
+        print("✅ Exam added successfully")
+
+    except ValueError:
+        print("❌ Invalid date format. Use YYYY-MM-DD.")
+    except Exception as e:
+        print("❌ Failed to add exam:", e)
+
 
 def handle_email():
     to_email = input("Send email to: ")
