@@ -1,25 +1,16 @@
 from datetime import datetime
+from app.core.notifier import send_email
 from app.modules.exams.service import get_all_exams
+from app.modules.subscriptions.service import get_subscriptions
 
+def run_daily_notifications():
+    today = datetime.today().strftime("%Y-%m-%d")
 
-def show_countdowns():
-    exams = get_all_exams()
-    today = datetime.today()
-
-    if not exams:
-        print("No exams found.")
-        return
-
-    for exam in exams:
-        course, exam_date, signup_start, signup_end, notes = exam
-
-        exam_dt = datetime.strptime(exam_date, "%Y-%m-%d")
-        days_left = (exam_dt - today).days
-
-        print("\n-----------------------------")
-        print(f"Course: {course}")
-        print(f"Exam Date: {exam_date} ({days_left} days left)")
-        print(f"Signup opens: {signup_start}")
-        print(f"Signup closes: {signup_end}")
-        if notes:
-            print(f"Notes: {notes}")
+    for exam in get_all_exams():
+        for sub in get_subscriptions(exam["course_code"]):
+            if today == exam["signup_start"]:
+                send_email(
+                    sub["email"],
+                    f"Signup Open – {exam['course_code']}",
+                    "Registration is now open."
+                )

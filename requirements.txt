@@ -2,3 +2,5 @@ schedule
 streamlit
 twilio
 python-dotenv
+requests
+beautifulsoup4
