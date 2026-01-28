@@ -9,18 +9,27 @@ def read_ical(file_path):
 
     for component in calendar.walk():
         if component.name == "VEVENT":
-            summary = str(component.get("summary"))
+            summary = str(component.get("summary", ""))
+
+            program = None
+            course = None
+
+            # Parse structured fields from SUMMARY
+            if "Program:" in summary and "Kurs.grp:" in summary:
+                try:
+                    program = summary.split("Program:")[1].split("Kurs.grp:")[0].strip()
+                    course = summary.split("Kurs.grp:")[1].split("Sign:")[0].strip()
+                except IndexError:
+                    continue  # skip malformed entries
+
             dtstart = component.get("dtstart").dt
+            exam_date = dtstart.date() if isinstance(dtstart, datetime) else dtstart
 
-            # Handle datetime vs date
-            if isinstance(dtstart, datetime):
-                exam_date = dtstart.date()
-            else:
-                exam_date = dtstart
-
-            exams.append({
-                "course": summary,
-                "date": exam_date
-            })
+            if program and course:
+                exams.append({
+                    "program": program,
+                    "course": course,
+                    "date": exam_date
+                })
 
     return exams

@@ -3,36 +3,38 @@ from app.modules.exams.ical_reader import read_ical
 
 TIMETABLE_DIR = os.path.join(os.path.dirname(__file__), "timetables")
 
-def load_timetable(program: str, year: int, semester: int):
-    """
-    Loads the timetable for a program/year/semester.
-    Returns a list of courses with their exam dates.
-    """
-    filename = f"{program}_{year}_Sem{semester}.ics"
-    path = os.path.join(TIMETABLE_DIR, filename)
-
-    if not os.path.exists(path):
-        raise FileNotFoundError(f"No timetable found for {program} Year {year} Semester {semester}")
-
-    exams = read_ical(path)
-    return exams
+VALID_YEARS = [1, 2, 3]
+VALID_SEMESTERS = [1, 2]
 
 def list_available_programs_from_ical():
-    """
-    Scan all iCal files and extract the programs from the events inside each file.
-    Returns a unique sorted list of programs.
-    Assumes program code is part of the SUMMARY field: e.g., "CS101 Final Exam"
-    """
     programs = set()
 
     for filename in os.listdir(TIMETABLE_DIR):
         if filename.endswith(".ics"):
-            path = os.path.join(TIMETABLE_DIR, filename)
-            exams = read_ical(path)  # returns list of dicts {"course":..., "date":...}
+            exams = read_ical(os.path.join(TIMETABLE_DIR, filename))
             for exam in exams:
-                course_name = exam["course"]  # e.g., "CS101 Final Exam"
-                # Extract program code: take letters at start of course name
-                program_code = "".join([c for c in course_name if c.isalpha()])
-                programs.add(program_code.upper())
+                programs.add(exam["program"])
 
-    return sorted(list(programs))
+    return sorted(programs)
+
+def load_timetable(program: str, year: int, semester: int):
+    # Backend validation (important)
+    if year not in VALID_YEARS:
+        raise ValueError("Year must be between 1 and 3")
+
+    if semester not in VALID_SEMESTERS:
+        raise ValueError("Semester must be 1 or 2")
+
+    courses = []
+
+    for filename in os.listdir(TIMETABLE_DIR):
+        if filename.endswith(".ics"):
+            exams = read_ical(os.path.join(TIMETABLE_DIR, filename))
+            for exam in exams:
+                if exam["program"] == program:
+                    courses.append(exam)
+
+    if not courses:
+        raise FileNotFoundError(f"No courses found for program {program}")
+
+    return courses
