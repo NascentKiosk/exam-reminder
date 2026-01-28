@@ -8,28 +8,26 @@ def read_ical(file_path):
         calendar = Calendar.from_ical(f.read())
 
     for component in calendar.walk():
-        if component.name == "VEVENT":
-            summary = str(component.get("summary", ""))
+        if component.name != "VEVENT":
+            continue
 
-            program = None
-            course = None
+        summary = str(component.get("summary", ""))
 
-            # Parse structured fields from SUMMARY
-            if "Program:" in summary and "Kurs.grp:" in summary:
-                try:
-                    program = summary.split("Program:")[1].split("Kurs.grp:")[0].strip()
-                    course = summary.split("Kurs.grp:")[1].split("Sign:")[0].strip()
-                except IndexError:
-                    continue  # skip malformed entries
+        try:
+            raw_program = summary.split("Program:")[1].split("Kurs.grp:")[0].strip()
+            program_code = raw_program.split()[0]  # TBSE3
 
-            dtstart = component.get("dtstart").dt
-            exam_date = dtstart.date() if isinstance(dtstart, datetime) else dtstart
+            course = summary.split("Kurs.grp:")[1].split("Sign:")[0].strip()
+        except (IndexError, ValueError):
+            continue  # Skip malformed entries
 
-            if program and course:
-                exams.append({
-                    "program": program,
-                    "course": course,
-                    "date": exam_date
-                })
+        dtstart = component.get("dtstart").dt
+        exam_date = dtstart.date() if isinstance(dtstart, datetime) else dtstart
+
+        exams.append({
+            "program_code": program_code,
+            "course": course,
+            "date": exam_date
+        })
 
     return exams
