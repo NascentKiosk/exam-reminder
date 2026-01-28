@@ -42,28 +42,53 @@
 #         print(c, "→ ERROR:", e)
 
 
-import requests
+# import requests
 
-URL = "https://schema.hkr.se/setup/jsp/Schema.jsp"
+# URL = "https://schema.hkr.se/setup/jsp/Schema.jsp"
 
-PARAMS = {
-    "startDatum": "idag",
-    "intervallTyp": "a",
-    "intervallAntal": "1",
-    "sokMedAND": "false",
-    "sprak": "SV",
-    "resurser": ""
-}
+# PARAMS = {
+#     "startDatum": "idag",
+#     "intervallTyp": "a",
+#     "intervallAntal": "1",
+#     "sokMedAND": "false",
+#     "sprak": "SV",
+#     "resurser": ""
+# }
 
-def fetch_html():
-    r = requests.get(URL, params=PARAMS, timeout=15)
-    r.raise_for_status()
-    return r.text
+# def fetch_html():
+#     r = requests.get(URL, params=PARAMS, timeout=15)
+#     r.raise_for_status()
+#     return r.text
 
 
-if __name__ == "__main__":
-    html = fetch_html()
-    with open("data/live_timetable.html", "w", encoding="utf-8") as f:
-        f.write(html)
+# if __name__ == "__main__":
+#     html = fetch_html()
+#     with open("data/live_timetable.html", "w", encoding="utf-8") as f:
+#         f.write(html)
 
-    print("Saved live_timetable.html")
+#     print("Saved live_timetable.html")
+
+# from datetime import date, timedelta
+# from app.core.reminder_engine import run_reminders
+
+# start = date(2026, 3, 1)
+# end = date(2026, 6, 30)
+
+# current = start
+# while current <= end:
+#     run_reminders(today=current, dry_run=True)
+#     current += timedelta(days=1)
+
+import sqlite3
+
+conn = sqlite3.connect("path_to_your_db.db")  # <- put your actual DB path here
+cur = conn.cursor()
+
+cur.execute("PRAGMA table_info(exams);")
+columns = cur.fetchall()
+
+print("Columns in exams table:")
+for col in columns:
+    print(col[1])  # column name
+
+conn.close()
