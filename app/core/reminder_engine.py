@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta, date
-from app.core.database import get_connection
+from app.core.database import get_connection, init_db
 from app.core.notifier import send_email
 
 REG_OPEN_DAYS = 50
@@ -7,6 +7,7 @@ REG_CLOSE_DAYS = 14
 
 
 def run_reminders(today: date | None = None, dry_run: bool = False):
+    init_db()  # <-- THIS LINE IS CRITICAL
     today = today or datetime.today().date()
 
     conn = get_connection()
