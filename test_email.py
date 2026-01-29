@@ -79,16 +79,40 @@
 #     run_reminders(today=current, dry_run=True)
 #     current += timedelta(days=1)
 
-import sqlite3
+# import sqlite3
 
-conn = sqlite3.connect("path_to_your_db.db")  # <- put your actual DB path here
+# conn = sqlite3.connect("path_to_your_db.db")  # <- put your actual DB path here
+# cur = conn.cursor()
+
+# cur.execute("PRAGMA table_info(exams);")
+# columns = cur.fetchall()
+
+# print("Columns in exams table:")
+# for col in columns:
+#     print(col[1])  # column name
+
+# conn.close()
+
+
+from app.core.database import get_connection
+
+conn = get_connection()
 cur = conn.cursor()
 
-cur.execute("PRAGMA table_info(exams);")
-columns = cur.fetchall()
+# Insert exam
+cur.execute(
+    "INSERT INTO exams (course_code, exam_date) VALUES (?, ?)",
+    ("TEST101", "2026-01-20")
+)
 
-print("Columns in exams table:")
-for col in columns:
-    print(col[1])  # column name
+# Insert subscription
+cur.execute(
+    "INSERT INTO subscriptions (course_code, email) VALUES (?, ?)",
+    ("TEST101", "mmbasujuma@gmail.com")
+)
 
+conn.commit()
 conn.close()
+
+print("✅ Test data inserted")
+
