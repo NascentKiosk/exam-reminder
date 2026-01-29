@@ -1,0 +1,6 @@
+# Ignore generated HTML files in language stats
+*.html linguist-generated
+
+# If you have cached or downloaded timetable pages
+schema*.html linguist-generated
+timetable*.html linguist-generated
