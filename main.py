@@ -1,6 +1,7 @@
 from app.core.database import init_db
 from app.core.scheduler import show_countdowns
 from app.core.notifier import send_email, send_sms
+from app.modules.exams.ical_importer import import_ical
 from app.modules.exams.service import add_exam
 
 def menu():
@@ -8,6 +9,7 @@ def menu():
     print("1. Add a new exam")
     print("2. View exams & countdowns")
     print("3. Send email reminders")
+    print("4. Import exams from iCal file") 
     # print("4. Send SMS reminders") # Temporarily disabled
     print("5. Exit")
 
@@ -39,6 +41,17 @@ def handle_sms():
     send_sms(number, message)
     print("📱 SMS sent")
 
+    from app.modules.exams.ical_importer import import_ical  # NEW import
+
+def handle_ical_import():
+    path = input("Path to .ics file: ")
+    try:
+        import_ical(path)
+        print("📅 Exams imported successfully from iCal")
+    except Exception as e:
+        print("❌ Failed to import exams:", e)
+
+
 def main():
     init_db()
 
@@ -52,7 +65,9 @@ def main():
             show_countdowns()
         elif choice == "3":
             handle_email()
-        elif choice == "4":
+        if choice == "4":
+            handle_ical_import()
+        #elif choice == "4":
             # handle_sms()  # Disabled for now
             print("SMS feature temporarily disabled.")
         elif choice == "5":

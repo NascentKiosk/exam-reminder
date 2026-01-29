@@ -12,23 +12,26 @@ def init_db():
     conn = get_connection()
     cur = conn.cursor()
 
+    # Exams table
     cur.execute("""
     CREATE TABLE IF NOT EXISTS exams (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        course_code TEXT,
-        exam_date TEXT,
-        signup_start TEXT,
-        signup_end TEXT
+        course_code TEXT NOT NULL,
+        exam_date TEXT NOT NULL
     )
     """)
 
+    # Subscriptions table (ONLY ONCE)
     cur.execute("""
     CREATE TABLE IF NOT EXISTS subscriptions (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        course_code TEXT,
-        email TEXT
+        course_code TEXT NOT NULL,
+        email TEXT NOT NULL,
+        notified_open INTEGER DEFAULT 0,
+        notified_mid INTEGER DEFAULT 0,
+        notified_close INTEGER DEFAULT 0
     )
     """)
-
+    
     conn.commit()
     conn.close()
