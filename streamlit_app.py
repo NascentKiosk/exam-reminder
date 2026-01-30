@@ -139,7 +139,8 @@ if st.session_state.exams:
             for course in final_courses
         }
 
-        BASE_URL = st.get_option("server.baseUrlPath") or "http://localhost:8501"
+        BASE_URL = "https://examreminder.streamlit.app"
+
 
         send_confirmation_email(
             email=email,
