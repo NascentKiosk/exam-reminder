@@ -1,3 +1,9 @@
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent
+sys.path.append(str(ROOT))
+
 import streamlit as st
 from app.core.database import init_db
 from app.core.notifier import send_confirmation_email, generate_token
@@ -6,6 +12,8 @@ from app.modules.exams.timetable_service import (
     load_timetable,
     list_available_programs_from_ical
 )
+from app.core.unsubscribe import unsubscribe
+
 
 # -------------------------------
 # Initialization
