@@ -1,9 +1,12 @@
 from app.core.database import get_connection
+from app.core.notifier import generate_token
 
 
-def subscribe(course_code, email, language, unsubscribe_token):
+def subscribe(course_code, email, language):
     conn = get_connection()
     cur = conn.cursor()
+
+    unsubscribe_token = generate_token()
 
     cur.execute(
         """
@@ -25,48 +28,4 @@ def subscribe(course_code, email, language, unsubscribe_token):
     conn.commit()
     conn.close()
 
-
-def get_subscriptions(active_only: bool = True):
-    """
-    Returns all subscriptions.
-    Used by reminder engine.
-    """
-    conn = get_connection()
-    cur = conn.cursor()
-
-    if active_only:
-        cur.execute(
-            """
-            SELECT
-                id,
-                course_code,
-                email,
-                language,
-                unsubscribe_token,
-                notified_open,
-                notified_mid,
-                notified_close
-            FROM subscriptions
-            WHERE active = 1
-            """
-        )
-    else:
-        cur.execute(
-            """
-            SELECT
-                id,
-                course_code,
-                email,
-                language,
-                unsubscribe_token,
-                notified_open,
-                notified_mid,
-                notified_close,
-                active
-            FROM subscriptions
-            """
-        )
-
-    rows = cur.fetchall()
-    conn.close()
-    return rows
+    return unsubscribe_token
