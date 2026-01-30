@@ -78,6 +78,11 @@ if st.session_state.exams:
         "Select courses to receive reminders for",
         course_names
     )
+    exam_date_map = {
+    exam["course"]: exam["exam_date"]
+    for exam in st.session_state.exams
+}
+
 
     manual_course = st.text_input(
         "Or enter a course manually (must exist above)"
@@ -120,13 +125,19 @@ if st.session_state.exams:
 
         BASE_URL = "http://localhost:8501"  # change later when deployed
 
+        course_dates = {
+            course: exam_date_map[course]
+            for course in final_courses
+        }
+
         send_confirmation_email(
             email=email,
             language=language,
-            courses=final_courses,
+            courses=course_dates,
             unsubscribe_token=unsubscribe_token,
             base_url=BASE_URL
         )
+
 
         st.success("✅ Subscription successful!")
 

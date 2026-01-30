@@ -49,7 +49,7 @@ def send_email(to: str, subject: str, body: str):
 def send_confirmation_email(
     email: str,
     language: str,
-    courses: list[str],
+    courses: dict[str, str],  # course → exam_date
     unsubscribe_token: str,
     base_url: str
 ):
@@ -61,10 +61,15 @@ def send_confirmation_email(
 
     unsubscribe_url = f"{base_url}/?unsubscribe={unsubscribe_token}"
 
+    course_lines = "\n".join(
+        f"- {course}: {date}"
+        for course, date in courses.items()
+    )
+
     body = load_template(
-        language,
-        "confirmation.txt",
-        courses=", ".join(courses),
+        language=language,
+        template_name="confirmation.txt",
+        course_list=course_lines,
         unsubscribe_url=unsubscribe_url
     )
 
