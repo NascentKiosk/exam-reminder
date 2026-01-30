@@ -13,17 +13,10 @@ EMAIL_PASSWORD = getenv("EMAIL_PASSWORD")
 TEMPLATE_DIR = Path("app/templates")
 
 
-# -------------------------------
-# Token
-# -------------------------------
 def generate_token() -> str:
-    """Generate secure unsubscribe token"""
     return secrets.token_urlsafe(24)
 
 
-# -------------------------------
-# Templates
-# -------------------------------
 def load_template(language: str, template_name: str, **variables) -> str:
     if language not in ("en", "sv"):
         language = "en"
@@ -37,10 +30,10 @@ def load_template(language: str, template_name: str, **variables) -> str:
     return text
 
 
-# -------------------------------
-# Email sending
-# -------------------------------
 def send_email(to: str, subject: str, body: str):
+    if not EMAIL_ADDRESS or not EMAIL_PASSWORD:
+        raise RuntimeError("Email credentials not set")
+
     msg = EmailMessage()
     msg.set_content(body)
     msg["From"] = EMAIL_ADDRESS
@@ -57,7 +50,7 @@ def send_confirmation_email(
     language: str,
     courses: list[str],
     unsubscribe_token: str,
-    base_url: str,
+    base_url: str
 ):
     subject = (
         "Exam Reminder Subscription Confirmed"
@@ -71,7 +64,7 @@ def send_confirmation_email(
         language,
         "confirmation.txt",
         courses=", ".join(courses),
-        unsubscribe_url=unsubscribe_url,
+        unsubscribe_url=unsubscribe_url
     )
 
     send_email(email, subject, body)
