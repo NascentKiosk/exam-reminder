@@ -1,60 +1,66 @@
 import os
-from app.modules.exams.ical_reader import read_ical
+from app.modules.exams.ical_reader import read_ical, read_all_events
 from app.data.programs import PROGRAM_NAME_MAP
 
 TIMETABLE_DIR = os.path.join(os.path.dirname(__file__), "timetables")
-
-VALID_YEARS = [1, 2, 3]
 VALID_SEMESTERS = [1, 2]
 
+
+def _normalize(code: str) -> str:
+    return code.strip().upper()
+
+
 def list_available_programs_from_ical():
-    """
-    Returns:
-        dict { program_code: display_name } for each year
-        e.g. { "TBSE1": "Bachelor Programme in Software Development - Year 1", ... }
-    """
     programs = {}
 
     for filename in os.listdir(TIMETABLE_DIR):
         if not filename.endswith(".ics"):
             continue
 
-        exams = read_ical(os.path.join(TIMETABLE_DIR, filename))
-        for exam in exams:
-            code = exam["program_code"]
-            if code in PROGRAM_NAME_MAP:
+        events = read_all_events(os.path.join(TIMETABLE_DIR, filename))
+
+        for event in events:
+            code = _normalize(event["program_code"])
+
+            if code in PROGRAM_NAME_MAP and code not in programs:
                 year = PROGRAM_NAME_MAP[code]["year"]
-                display_name = f"{PROGRAM_NAME_MAP[code]['name']} - Year {year}"
-                # Only add if not already added
-                if code not in programs:
-                    programs[code] = display_name
+                name = PROGRAM_NAME_MAP[code]["name"]
+                programs[code] = f"{name} - Year {year}"
 
     return programs
 
 
-
-# def load_timetable(program_code: str, year: int, semester: int):
 def load_timetable(program_code: str, semester: int):
-
-  # if year not in VALID_YEARS:
-      # raise ValueError("Year must be between 1 and 3")
     if semester not in VALID_SEMESTERS:
         raise ValueError("Semester must be 1 or 2")
 
-    courses = []
+    program_code = _normalize(program_code)
+
+    # course_name -> latest exam dict
+    course_map = {}
 
     for filename in os.listdir(TIMETABLE_DIR):
         if not filename.endswith(".ics"):
             continue
 
         exams = read_ical(os.path.join(TIMETABLE_DIR, filename))
+
         for exam in exams:
-            # Check both program code and year
-            if exam["program_code"] == program_code and PROGRAM_NAME_MAP[program_code]["year"]:
-                courses.append(exam)
+            if _normalize(exam["program_code"]) != program_code:
+                continue
 
-    if not courses:
-        raise FileNotFoundError("No courses found for selected program/year")
+            course = exam["course"]
+            exam_date = exam["exam_date"]
 
-    return courses
+            # keep the latest date per course
+            if (
+                course not in course_map
+                or exam_date > course_map[course]["exam_date"]
+            ):
+                course_map[course] = exam
+
+    if not course_map:
+        raise FileNotFoundError(f"No exams found for program {program_code}")
+
+    return list(course_map.values())
 

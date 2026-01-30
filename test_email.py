@@ -116,15 +116,28 @@
 
 # print("✅ Test data inserted")
 
+# from app.core.database import get_connection
+
+# conn = get_connection()
+# cur = conn.cursor()
+
+# rows = cur.execute(
+#     "SELECT course_code, exam_date FROM exams"
+# ).fetchall()
+
+# print(rows)
+
+# conn.close()
+
+
 from app.core.database import get_connection
 
 conn = get_connection()
 cur = conn.cursor()
 
-rows = cur.execute(
-    "SELECT course_code, exam_date FROM exams"
-).fetchall()
+cur.execute("DELETE FROM subscriptions")
 
-print(rows)
-
+conn.commit()
 conn.close()
+
+print("✅ Subscriptions table reset")
