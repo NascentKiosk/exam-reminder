@@ -1,7 +1,6 @@
-schedule
-streamlit
-twilio
 python-dotenv
-requests
-beautifulsoup4
 icalendar
+beautifulsoup4
+requests
+python-dateutil
+
