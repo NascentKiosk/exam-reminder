@@ -15,10 +15,10 @@ PROGRAM_NAME_MAP = {
     #"TBSE1": {"name": "Bachelor Programme in Software Development", "year": 3},
     "TGDU4": {"name": "Datasystemutvecklingsprogrammet", "year": 1},
     "TBIT3": {"name": "Datasystemutvecklingsprogrammet", "year": 2},
-    "NGBM2 2025 04 100 NML sv": {"name": "Biomedicinska analytikerprogrammet", "year": 3},
-    "NGBM2 2025 36 100 NML sv": {"name": "Biomedicinska analytikerprogrammet", "year": 2},
-    "NBMK3 2026 04 100 NML sv NGBM2 2025 36 100 NML sv NKUB2 2025 36 100 NML sv": {"name": "Biomedicinska analytikerprogrammet", "year": 1},
-    "NGBM2": {"name": "Biomedicinska analytikerprogrammet", "year": 3}
+   # "NGBM2 2025 04 100 NML sv": {"name": "Biomedicinska analytikerprogrammet", "year": 3},
+    # "NGBM2 2025 36 100 NML sv": {"name": "Biomedicinska analytikerprogrammet", "year": 2},
+    # "NBMK3 2026 04 100 NML sv NGBM2 2025 36 100 NML sv NKUB2 2025 36 100 NML sv": {"name": "Biomedicinska analytikerprogrammet", "year": 1},
+    # "NGBM2": {"name": "Biomedicinska analytikerprogrammet", "year": 3}
 
     
 
