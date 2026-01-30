@@ -33,9 +33,11 @@ def list_available_programs_from_ical():
 
 
 
-def load_timetable(program_code: str, year: int, semester: int):
-    if year not in VALID_YEARS:
-        raise ValueError("Year must be between 1 and 3")
+# def load_timetable(program_code: str, year: int, semester: int):
+def load_timetable(program_code: str, semester: int):
+
+  # if year not in VALID_YEARS:
+      # raise ValueError("Year must be between 1 and 3")
     if semester not in VALID_SEMESTERS:
         raise ValueError("Semester must be 1 or 2")
 
@@ -48,7 +50,7 @@ def load_timetable(program_code: str, year: int, semester: int):
         exams = read_ical(os.path.join(TIMETABLE_DIR, filename))
         for exam in exams:
             # Check both program code and year
-            if exam["program_code"] == program_code and PROGRAM_NAME_MAP[program_code]["year"] == year:
+            if exam["program_code"] == program_code and PROGRAM_NAME_MAP[program_code]["year"]:
                 courses.append(exam)
 
     if not courses:

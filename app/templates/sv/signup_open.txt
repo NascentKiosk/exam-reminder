@@ -1,0 +1,9 @@
+Hej,
+
+Registration for the exam in {{ course }} is now OPEN.
+
+🗓 Exam date: {{ exam_date }}
+
+Make sure you sign up in time!
+
+Good luck 🍀

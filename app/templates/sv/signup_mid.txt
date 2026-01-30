@@ -1,0 +1,5 @@
+Friendly reminder 😊
+
+Registration for {{ course }} is still open.
+
+Don’t forget to sign up before the deadline.

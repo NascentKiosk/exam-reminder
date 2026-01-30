@@ -94,25 +94,37 @@
 # conn.close()
 
 
+# from app.core.database import get_connection
+
+# conn = get_connection()
+# cur = conn.cursor()
+
+# # Insert exam
+# cur.execute(
+#     "INSERT INTO exams (course_code, exam_date) VALUES (?, ?)",
+#     ("TEST101", "2026-01-20")
+# )
+
+# # Insert subscription
+# cur.execute(
+#     "INSERT INTO subscriptions (course_code, email) VALUES (?, ?)",
+#     ("TEST101", "mmbasujuma@gmail.com")
+# )
+
+# conn.commit()
+# conn.close()
+
+# print("✅ Test data inserted")
+
 from app.core.database import get_connection
 
 conn = get_connection()
 cur = conn.cursor()
 
-# Insert exam
-cur.execute(
-    "INSERT INTO exams (course_code, exam_date) VALUES (?, ?)",
-    ("TEST101", "2026-01-20")
-)
+rows = cur.execute(
+    "SELECT course_code, exam_date FROM exams"
+).fetchall()
 
-# Insert subscription
-cur.execute(
-    "INSERT INTO subscriptions (course_code, email) VALUES (?, ?)",
-    ("TEST101", "mmbasujuma@gmail.com")
-)
+print(rows)
 
-conn.commit()
 conn.close()
-
-print("✅ Test data inserted")
-

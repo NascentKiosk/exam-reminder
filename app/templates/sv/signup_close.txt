@@ -1,0 +1,5 @@
+⚠️ Important reminder
+
+Registration for {{ course }} closes in 3 days.
+
+This is your last chance to sign up!

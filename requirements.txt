@@ -3,4 +3,6 @@ icalendar
 beautifulsoup4
 requests
 python-dateutil
-
+pytest
+ics
+streamlit
