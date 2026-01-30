@@ -64,6 +64,7 @@ if st.button("Load Courses"):
     except Exception as e:
         st.error(str(e))
 
+
 # -------------------------------
 # Step 3: Subscribe
 # -------------------------------
@@ -72,17 +73,17 @@ if st.session_state.exams:
         {exam["course"] for exam in st.session_state.exams}
     )
 
+    exam_date_map = {}
+
+    for exam in st.session_state.exams:
+        exam_date_map[exam["course"]] = exam["date"]
+
     st.subheader("Available Courses")
 
     selected_courses = st.multiselect(
         "Select courses to receive reminders for",
         course_names
     )
-    exam_date_map = {
-    exam["course"]: exam["exam_date"]
-    for exam in st.session_state.exams
-}
-
 
     manual_course = st.text_input(
         "Or enter a course manually (must exist above)"
