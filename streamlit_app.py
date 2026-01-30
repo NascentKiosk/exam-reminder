@@ -1,25 +1,17 @@
 import streamlit as st
-from app.core.notifier import send_email
 from app.core.database import init_db
+from app.core.notifier import send_confirmation_email, generate_token
 from app.modules.subscriptions.service import subscribe
 from app.modules.exams.timetable_service import (
     load_timetable,
     list_available_programs_from_ical
 )
-from app.data.programs import PROGRAM_NAME_MAP
-
-# -------------------------------
-# Helpers
-# -------------------------------
-def get_first_name_from_email(email: str) -> str:
-    local_part = email.split("@")[0]
-    return local_part.split(".")[0].capitalize()
 
 # -------------------------------
 # Initialization
 # -------------------------------
 init_db()
-st.title("Student Exam Reminder")
+st.title("🎓 Student Exam Reminder")
 
 if "exams" not in st.session_state:
     st.session_state.exams = None
@@ -41,15 +33,23 @@ program_code = st.selectbox(
     format_func=lambda code: programs[code]
 )
 
-year = st.selectbox("Year of Study", [1, 2, 3])
-semester = st.selectbox("Semester", [1, 2])
+# year = st.selectbox("Year of Study", [1, 2, 3])
+# semester = st.selectbox("Semester", [1, 2])
+semester = st.radio(
+    "Semester",
+    options=[1, 2],
+    horizontal=True
+)
+
 
 # -------------------------------
 # Step 2: Load Courses
 # -------------------------------
 if st.button("Load Courses"):
     try:
-        st.session_state.exams = load_timetable(program_code, year, semester)
+        #st.session_state.exams = load_timetable(program_code, year, semester)
+        st.session_state.exams = load_timetable(program_code, semester)
+
     except Exception as e:
         st.error(str(e))
 
@@ -74,6 +74,12 @@ if st.session_state.exams:
 
     email = st.text_input("Email address")
 
+    language = st.selectbox(
+        "Language / Språk",
+        options=["en", "sv"],
+        format_func=lambda x: "English" if x == "en" else "Svenska"
+    )
+
     if st.button("Subscribe"):
         final_courses = selected_courses.copy()
 
@@ -91,27 +97,25 @@ if st.session_state.exams:
             st.error("Please select at least one course.")
             st.stop()
 
-        first_name = get_first_name_from_email(email)
+        unsubscribe_token = generate_token()
 
         for course in final_courses:
-            subscribe(course, email)
-            send_email(
-                email,
-                f"Subscription confirmed – {course}",
-                f"""Hej {first_name}!
-
-You have now subscribed to exam reminders.
-
-Course: {course}
-
-You will receive notifications when:
-- Exam registration opens
-- Mid registration reminder
-- 3 days before registration closes
-
-Good luck with your studies!
-"""
+            subscribe(
+                course_code=course,
+                email=email,
+                language=language,
+                unsubscribe_token=unsubscribe_token
             )
+
+        BASE_URL = "http://localhost:8501"  # change later when deployed
+
+        send_confirmation_email(
+            email=email,
+            language=language,
+            courses=final_courses,
+            unsubscribe_token=unsubscribe_token,
+            base_url=BASE_URL
+        )
 
         st.success("✅ Subscription successful!")
 

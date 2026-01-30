@@ -27,11 +27,17 @@ def init_db():
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         course_code TEXT NOT NULL,
         email TEXT NOT NULL,
+        language TEXT DEFAULT 'en',
+        unsubscribe_token TEXT UNIQUE,
+        active INTEGER DEFAULT 1,
         notified_open INTEGER DEFAULT 0,
         notified_mid INTEGER DEFAULT 0,
         notified_close INTEGER DEFAULT 0
     )
+
     """)
+
+
     
     conn.commit()
     conn.close()

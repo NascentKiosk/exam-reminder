@@ -1,0 +1,16 @@
+Hi 👋
+
+You have successfully subscribed to exam reminders.
+
+Courses:
+{{ courses }}
+
+You will receive reminders when:
+- Registration opens
+- Midway reminder
+- 3 days before registration closes
+
+Unsubscribe anytime:
+{{ unsubscribe_url }}
+
+Good luck with your studies!

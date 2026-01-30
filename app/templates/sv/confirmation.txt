@@ -1,0 +1,16 @@
+Hej 👋
+
+Du har nu registrerats för tentapåminnelser.
+
+Kurser:
+{{ courses }}
+
+Du kommer att få påminnelser när:
+- Anmälan öppnar
+- Halvtidspåminnelse
+- 3 dagar innan anmälan stänger
+
+Avsluta prenumerationen när som helst:
+{{ unsubscribe_url }}
+
+Lycka till med studierna!
