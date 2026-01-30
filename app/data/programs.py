@@ -17,7 +17,7 @@ PROGRAM_NAME_MAP = {
     "TBIT3": {"name": "Datasystemutvecklingsprogrammet", "year": 2},
     "NGBM2 2025 04 100 NML sv": {"name": "Biomedicinska analytikerprogrammet", "year": 3},
     "NGBM2 2025 36 100 NML sv": {"name": "Biomedicinska analytikerprogrammet", "year": 2},
-    "NGBM2 2026 04 100 NML sv": {"name": "Biomedicinska analytikerprogrammet", "year": 1},
+    "NGBM3 2026 04 100 NML sv": {"name": "Biomedicinska analytikerprogrammet", "year": 1},
     "NGBM2": {"name": "Biomedicinska analytikerprogrammet", "year": 3}
 
 
