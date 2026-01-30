@@ -17,7 +17,8 @@ def generate_token() -> str:
     return secrets.token_urlsafe(24)
 
 
-def load_template(language: str, template_name: str, **variables) -> str:
+def load_template( language: str, template_name: str, **variables) -> str:
+   
     if language not in ("en", "sv"):
         language = "en"
 

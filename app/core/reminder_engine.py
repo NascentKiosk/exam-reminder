@@ -9,7 +9,6 @@ REG_CLOSE_DAYS = 14
 
 
 def run_reminders(today: date | None = None, dry_run: bool = False):
-    # Ensure DB + tables exist (CRITICAL for GitHub Actions)
     init_db()
 
     today = today or datetime.today().date()
@@ -22,18 +21,21 @@ def run_reminders(today: date | None = None, dry_run: bool = False):
             s.id,
             s.email,
             s.course_code,
+            s.language,
             e.exam_date,
             s.notified_open,
             s.notified_mid,
             s.notified_close
         FROM subscriptions s
         JOIN exams e ON s.course_code = e.course_code
+        WHERE s.active = 1
     """)
 
     for (
         sub_id,
         email,
         course,
+        language,
         exam_date_raw,
         notified_open,
         notified_mid,
@@ -54,36 +56,39 @@ def run_reminders(today: date | None = None, dry_run: bool = False):
         # --- SIGNUP OPEN ---
         if today == signup_open and not notified_open:
             _send(
-                email,
-                course,
-                "Signup Opened",
-                "signup_open.txt",
-                exam_date,
-                dry_run
+                email=email,
+                course=course,
+                language=language,
+                subject="Signup Opened",
+                template_name="signup_open.txt",
+                exam_date=exam_date,
+                dry_run=dry_run
             )
             _mark(cur, "notified_open", sub_id, dry_run)
 
         # --- MID REMINDER ---
         if today == midpoint and not notified_mid:
             _send(
-                email,
-                course,
-                "Signup Reminder",
-                "signup_mid.txt",
-                exam_date,
-                dry_run
+                email=email,
+                course=course,
+                language=language,
+                subject="Signup Reminder",
+                template_name="signup_mid.txt",
+                exam_date=exam_date,
+                dry_run=dry_run
             )
             _mark(cur, "notified_mid", sub_id, dry_run)
 
         # --- CLOSING WARNING ---
         if today == closing_warn and not notified_close:
             _send(
-                email,
-                course,
-                "Signup Closing Soon",
-                "signup_close.txt",
-                exam_date,
-                dry_run
+                email=email,
+                course=course,
+                language=language,
+                subject="Signup Closing Soon",
+                template_name="signup_closing.txt",
+                exam_date=exam_date,
+                dry_run=dry_run
             )
             _mark(cur, "notified_close", sub_id, dry_run)
 
@@ -93,9 +98,19 @@ def run_reminders(today: date | None = None, dry_run: bool = False):
     conn.close()
 
 
-def _send(email, course, subject, template_name, exam_date, dry_run):
+def _send(
+    *,
+    email: str,
+    course: str,
+    language: str,
+    subject: str,
+    template_name: str,
+    exam_date: date,
+    dry_run: bool
+):
     body = load_template(
-        template_name,
+        language=language,
+        template_name=template_name,
         course=course,
         exam_date=exam_date
     )
@@ -106,9 +121,9 @@ def _send(email, course, subject, template_name, exam_date, dry_run):
         send_email(email, subject, body)
 
 
-def _mark(cur, field, sub_id, dry_run):
+def _mark(cur, field: str, sub_id: int, dry_run: bool):
     if not dry_run:
         cur.execute(
-            f"UPDATE subscriptions SET {field}=1 WHERE id=?",
+            f"UPDATE subscriptions SET {field} = 1 WHERE id = ?",
             (sub_id,)
         )
