@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-sys.path.append(str(ROOT))
+sys.path.insert(0, str(ROOT))
+
+import streamlit as st
+
 
 import streamlit as st
 from app.core.database import init_db
