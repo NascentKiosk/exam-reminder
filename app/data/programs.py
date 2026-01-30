@@ -10,8 +10,8 @@
 
 
 PROGRAM_NAME_MAP = {
-    "TBSE3": {"name": "Bachelor Programme in Software Development", "year": 1},
-    "TBSE2": {"name": "Bachelor Programme in Software Development", "year": 2},
+    "TBSE3": {"name": "Bachelor's in Software Development", "year": 1},
+    "TBSE2": {"name": "Bachelor's in Software Development", "year": 2},
     #"TBSE1": {"name": "Bachelor Programme in Software Development", "year": 3},
     "TGDU4": {"name": "Datasystemutvecklingsprogrammet", "year": 1},
     "TBIT3": {"name": "Datasystemutvecklingsprogrammet", "year": 2}
