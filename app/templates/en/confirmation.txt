@@ -1,9 +1,8 @@
-Hi 👋
+Hello!
 
-You have successfully subscribed to exam reminders.
+You have successfully subscribed to exam reminders for:
 
-Courses:
-{{ courses }}
+{{ course_list }}
 
 You will receive reminders when:
 - Registration opens
