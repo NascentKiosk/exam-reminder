@@ -13,18 +13,19 @@ def read_ical(file_path):
         calendar = Calendar.from_ical(f.read())
 
     for component in calendar.walk("VEVENT"):
-        summary = str(component.get("SUMMARY", "")).lower()
-
-        # Only theory / teori exams
-        if "teori" not in summary and "theory" not in summary:
-            continue
+        summary = str(component.get("SUMMARY", ""))
 
         try:
-            raw_program = summary.split("program:")[1].split("kurs.grp:")[0]
+            raw_program = summary.split("Program:")[1].split("Kurs.grp:")[0]
             program_code = _normalize_program(raw_program.split()[0])
 
-            course = summary.split("kurs.grp:")[1].split("sign:")[0].strip()
+            course = summary.split("Kurs.grp:")[1].split("Sign:")[0].strip()
         except (IndexError, ValueError):
+            continue
+
+        # 🔹 Filter ONLY exam-like events
+        summary_lower = summary.lower()
+        if "teori" not in summary_lower and "theory" not in summary_lower:
             continue
 
         dtstart = component.get("DTSTART").dt
@@ -38,29 +39,3 @@ def read_ical(file_path):
         })
 
     return exams
-
-
-def read_all_events(file_path):
-    events = []
-
-    with open(file_path, "rb") as f:
-        calendar = Calendar.from_ical(f.read())
-
-    for component in calendar.walk("VEVENT"):
-        summary = str(component.get("SUMMARY", ""))
-
-        try:
-            raw_program = summary.split("Program:")[1].split("Kurs.grp:")[0]
-            program_code = _normalize_program(raw_program.split()[0])
-
-            course = summary.split("Kurs.grp:")[1].split("Sign:")[0].strip()
-        except (IndexError, ValueError):
-            continue
-
-        events.append({
-            "program_code": program_code,
-            "course": course,
-            "summary": summary,
-        })
-
-    return events
