@@ -1,0 +1,14 @@
+# Ignore generated folders
+node_modules/ linguist-vendored
+dist/ linguist-vendored
+build/ linguist-vendored
+static/ linguist-vendored
+
+# Mark templates as generated (optional)
+timetable.html linguist-detectable=false
+templates/*.html linguist-detectable=false
+
+
+
+# Force Python to be counted
+*.py linguist-detectable=true
