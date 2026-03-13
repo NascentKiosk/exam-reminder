@@ -24,21 +24,22 @@ jobs:
           docker push ${{ secrets.ACR_LOGIN_SERVER }}/exam-reminder:${{ github.sha }}
 
       # Deploy via REST API (NO AZ LOGIN NEEDED)
-      - name: Deploy container
+      - name: Deploy container via REST API
         run: |
+          IMAGE_TAG=${{ secrets.ACR_LOGIN_SERVER }}/exam-reminder:${{ github.sha }}
           curl -X POST \
-          -H "Authorization: Bearer ${{ secrets.AZURE_CONTAINERAPP_TOKEN }}" \
-          -H "Content-Type: application/json" \
-          https://management.azure.com/subscriptions/${{ secrets.AZURE_SUB_ID }}/resourceGroups/exam-reminder-rg/providers/Microsoft.App/containerApps/exam-reminder-app?api-version=2024-02-02-preview \
-          -d '{
-                "properties": {
-                  "template": {
-                    "containers": [
-                      {
-                        "name": "exam-reminder-app",
-                        "image": "${{ secrets.ACR_LOGIN_SERVER }}/exam-reminder:${{ github.sha }}"
-                      }
-                    ]
+            -H "Authorization: Bearer $TOKEN" \
+            -H "Content-Type: application/json" \
+            https://management.azure.com/subscriptions/${{ secrets.AZURE_SUB_ID }}/resourceGroups/exam-reminder-rg/providers/Microsoft.App/containerApps/exam-reminder-app?api-version=2024-02-02-preview \
+            -d "{
+                  \"properties\": {
+                    \"template\": {
+                      \"containers\": [
+                        {
+                          \"name\": \"exam-reminder-app\",
+                          \"image\": \"$IMAGE_TAG\"
+                        }
+                      ]
+                    }
                   }
-                }
-              }'
+                }"
