@@ -10,7 +10,7 @@ from app.core.notifier import send_email
 from app.core.database import init_db
 from app.modules.subscriptions.service import subscribe
 
-
+print("APP STARTED - NEW VERSION")
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +29,7 @@ init_db()
 
 
 st.title("Student Exam Reminder v7")
-print("APP STARTED - NEW VERSION")
+
 
 course = st.text_input("Course Code")
 email = st.text_input("Email")
