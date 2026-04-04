@@ -1,42 +1,45 @@
-name: Build and Deploy to Azure Container Apps
+name: Deploy to Azure Container Apps
 
 on:
   push:
-    branches:
-      - main
-
-env:
-  REGISTRY: examreminderhkr123.azurecr.io
-  IMAGE_NAME: exam-reminder
+    branches: [ main ]
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-      - name: Set image tag
-        id: vars
-        run: echo "TAG=${{ github.sha }}" >> $GITHUB_ENV
-
-      - name: Login to Azure
-        uses: azure/login@v1
+      # Login to ACR
+      - uses: azure/docker-login@v1
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          login-server: ${{ secrets.ACR_LOGIN_SERVER }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
 
-      - name: Login to ACR
-        run: az acr login --name examreminderhkr123
-
-      - name: Build and push Docker image
+      # Build and push image
+      - name: Build and push image
         run: |
-          docker build -t $REGISTRY/$IMAGE_NAME:$TAG .
-          docker push $REGISTRY/$IMAGE_NAME:$TAG
+          docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/exam-reminder:${{ github.sha }} .
+          docker push ${{ secrets.ACR_LOGIN_SERVER }}/exam-reminder:${{ github.sha }}
 
-      - name: Deploy to Azure Container Apps
+      # DEPLOY STEP (STUDENT ACCOUNT)
+      - name: Deploy to Azure Container App
         run: |
-          az containerapp update \
-            --name exam-reminder-app \
-            --resource-group exam-reminder-rg \
-            --image $REGISTRY/$IMAGE_NAME:$TAG
+          curl -X PATCH \
+          -H "Authorization: Bearer ${{ secrets.AZURE_CONTAINERAPP_TOKEN }}" \
+          -H "Content-Type: application/json" \
+          https://management.azure.com/subscriptions/${{ secrets.AZURE_SUB_ID }}/resourceGroups/exam-reminder-rg/providers/Microsoft.App/containerApps/exam-reminder-app?api-version=2024-02-02-preview \
+          -d '{
+                "properties": {
+                  "template": {
+                    "containers": [
+                      {
+                        "name": "exam-reminder-app",
+                        "image": "${{ secrets.ACR_LOGIN_SERVER }}/exam-reminder:${{ github.sha }}"
+                      }
+                    ]
+                  }
+                }
+              }'
