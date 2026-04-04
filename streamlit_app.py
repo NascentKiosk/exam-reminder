@@ -1,7 +1,23 @@
 import streamlit as st
+import logging
+import os
 from app.core.notifier import send_email
 from app.core.database import init_db
 from app.modules.subscriptions.service import subscribe
+
+from opencensus.ext.azure.log_exporter import AzureLogHandler
+
+logger = logging.getLogger(__name__)
+
+if os.getenv("APPLICATIONINSIGHTS_CONNECTION_STRING"):
+    logger.addHandler(
+        AzureLogHandler(
+            connection_string=os.getenv("APPLICATIONINSIGHTS_CONNECTION_STRING")
+        )
+    )
+
+logger.setLevel(logging.INFO)
+logger.info("🚀 Streamlit app starting...")
 
 # 👇 VERY IMPORTANT
 init_db()
