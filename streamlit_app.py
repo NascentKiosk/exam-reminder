@@ -1,3 +1,5 @@
+
+
 import os
 import logging
 import streamlit as st
@@ -7,6 +9,7 @@ from opencensus.ext.azure.log_exporter import AzureLogHandler
 from app.core.notifier import send_email
 from app.core.database import init_db
 from app.modules.subscriptions.service import subscribe
+
 
 
 logger = logging.getLogger(__name__)
@@ -24,7 +27,9 @@ logger.info(" Streamlit app starting...")
 # 👇 VERY IMPORTANT
 init_db()
 
+
 st.title("Student Exam Reminder v7")
+print("APP STARTED - NEW VERSION")
 
 course = st.text_input("Course Code")
 email = st.text_input("Email")
@@ -62,4 +67,7 @@ Good luck with your studies!
             #st.error(f"Email error: {e}")
     else:
         st.error("Please enter both course code and email.")
+
+
+
 
