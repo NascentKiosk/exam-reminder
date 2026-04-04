@@ -1,46 +1,42 @@
-name: Deploy to Azure Container Apps
+name: Build and Deploy to Azure Container Apps
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
+
+env:
+  REGISTRY: examreminderhkr123.azurecr.io
+  IMAGE_NAME: exam-reminder
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v6
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      # Login to ACR
-      - uses: azure/docker-login@v1
+      - name: Set image tag
+        id: vars
+        run: echo "TAG=${{ github.sha }}" >> $GITHUB_ENV
+
+      - name: Login to Azure
+        uses: azure/login@v1
         with:
-          login-server: ${{ secrets.ACR_LOGIN_SERVER }}
-          username: ${{ secrets.ACR_USERNAME }}
-          password: ${{ secrets.ACR_PASSWORD }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      # Build and push image
-      - run: |
-          docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/exam-reminder:${{ github.sha }} .
-          docker push ${{ secrets.ACR_LOGIN_SERVER }}/exam-reminder:${{ github.sha }}
+      - name: Login to ACR
+        run: az acr login --name examreminderhkr123
 
-      # Deploy via REST API (NO AZ LOGIN NEEDED)
-      - name: Deploy container
+      - name: Build and push Docker image
         run: |
-          curl -X POST \
-          -H "Authorization: Bearer ${{ secrets.AZURE_CONTAINERAPP_TOKEN }}" \
-          -H "Content-Type: application/json" \
-          https://management.azure.com/subscriptions/${{ secrets.AZURE_SUB_ID }}/resourceGroups/exam-reminder-rg/providers/Microsoft.App/containerApps/exam-reminder-app?api-version=2024-02-02-preview \
-          -d '{
-                "properties": {
-                  "template": {
-                    "containers": [
-                      {
-                        "name": "exam-reminder-app",
-                        "image": "${{ secrets.ACR_LOGIN_SERVER }}/exam-reminder:${{ github.sha }}"
-                      }
-                    ]
-                  }
-                }
-              }'
+          docker build -t $REGISTRY/$IMAGE_NAME:$TAG .
+          docker push $REGISTRY/$IMAGE_NAME:$TAG
 
-    
+      - name: Deploy to Azure Container Apps
+        run: |
+          az containerapp update \
+            --name exam-reminder-app \
+            --resource-group exam-reminder-rg \
+            --image $REGISTRY/$IMAGE_NAME:$TAG
