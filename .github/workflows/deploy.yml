@@ -24,7 +24,7 @@ jobs:
           docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/exam-reminder:${{ github.sha }} .
           docker push ${{ secrets.ACR_LOGIN_SERVER }}/exam-reminder:${{ github.sha }}
 
-      # DEPLOY STEP (STUDENT ACCOUNT)
+      # DEPLOY (STUDENT ACCOUNT)
       - name: Deploy to Azure Container App
         run: |
           curl -X PATCH \
