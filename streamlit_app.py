@@ -28,7 +28,7 @@ logger.info(" Streamlit app starting...")
 init_db()
 
 
-st.title("Student Exam Reminder v7")
+st.title("Student Exam Reminder v8")
 
 
 course = st.text_input("Course Code")
