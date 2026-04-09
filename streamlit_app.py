@@ -1,5 +1,3 @@
-
-
 import os
 import logging
 import streamlit as st
@@ -20,7 +18,6 @@ if os.getenv("APPLICATIONINSIGHTS_CONNECTION_STRING"):
             connection_string=os.getenv("APPLICATIONINSIGHTS_CONNECTION_STRING")
         )
     )
-logger.info("APP STARTED - NEW VERSION")
 logger.setLevel(logging.INFO)
 logger.info(" Streamlit app starting...")
 
