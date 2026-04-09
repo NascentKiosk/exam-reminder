@@ -11,7 +11,9 @@ from app.modules.subscriptions.service import subscribe
 # ================================
 # DEBUG (VISIBLE IN CONTAINER LOGS)
 # ================================
-print("🔥 APP STARTED - STDOUT WORKS")
+print("APP STARTED - STDOUT WORKS")
+
+
 
 
 # ================================
@@ -29,6 +31,7 @@ if connection_string and not logger.handlers:
 # Send test logs to Application Insights
 logger.info("APP STARTED - LOGGING WORKS")
 logger.error("TEST ERROR LOG")
+
 
 
 # ================================
@@ -89,3 +92,5 @@ Good luck with your studies!
         print("⚠️ EMPTY INPUT")
         logger.warning("User submitted empty form")
         st.error("Please enter both course code and email.")
+        
+raise Exception("Test alert")
