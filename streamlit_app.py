@@ -14,16 +14,15 @@ from app.modules.subscriptions.service import subscribe
 logger = logging.getLogger("exam-reminder")
 logger.setLevel(logging.INFO)
 
-# Avoid duplicate handlers
-if not logger.handlers:
-    connection_string = os.getenv("APPLICATIONINSIGHTS_CONNECTION_STRING")
+connection_string = os.getenv("APPLICATIONINSIGHTS_CONNECTION_STRING")
 
-    if connection_string:
-        handler = AzureLogHandler(connection_string=connection_string)
-        logger.addHandler(handler)
+if connection_string and not logger.handlers:
+    handler = AzureLogHandler(connection_string=connection_string)
+    logger.addHandler(handler)
 
-# Test log (confirms logging works)
-logger.info("APP STARTED - LOGGING WORKS")
+# 👇 FORCE execution inside Streamlit run
+st.write("")  # forces script execution
+logger.error("🚨 TEST LOG FROM STREAMLIT")
 
 
 # ================================
