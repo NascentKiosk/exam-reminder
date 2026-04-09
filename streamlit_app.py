@@ -9,7 +9,13 @@ from app.modules.subscriptions.service import subscribe
 
 
 # ================================
-# LOGGING SETUP (Azure Insights)
+# DEBUG (VISIBLE IN CONTAINER LOGS)
+# ================================
+print("🔥 APP STARTED - STDOUT WORKS")
+
+
+# ================================
+# LOGGING SETUP (APPLICATION INSIGHTS)
 # ================================
 logger = logging.getLogger("exam-reminder")
 logger.setLevel(logging.INFO)
@@ -20,9 +26,9 @@ if connection_string and not logger.handlers:
     handler = AzureLogHandler(connection_string=connection_string)
     logger.addHandler(handler)
 
-# 👇 FORCE execution inside Streamlit run
-st.write("")  # forces script execution
-logger.error("🚨 TEST LOG FROM STREAMLIT")
+# Send test logs to Application Insights
+logger.info("APP STARTED - LOGGING WORKS")
+logger.error("TEST ERROR LOG")
 
 
 # ================================
@@ -34,7 +40,7 @@ init_db()
 # ================================
 # STREAMLIT UI
 # ================================
-st.title("Student Exam Reminder v6")
+st.title("Student Exam Reminder v7")
 
 course = st.text_input("Course Code")
 email = st.text_input("Email")
@@ -46,7 +52,7 @@ if st.button("Subscribe"):
             # Save subscription
             subscribe(course, email)
 
-            # Log success
+            print(f"✅ SUBSCRIPTION (stdout): {email} -> {course}")
             logger.info(f"User subscribed: {email} -> {course}")
 
             # Send confirmation email
@@ -70,13 +76,16 @@ Good luck with your studies!
             st.success("Subscribed successfully! Confirmation email sent.")
 
         except ValueError as e:
+            print(f"⚠️ VALIDATION ERROR: {str(e)}")
             logger.warning(f"Validation error: {str(e)}")
             st.warning(str(e))
 
         except Exception as e:
+            print(f"❌ ERROR: {str(e)}")
             logger.error(f"Subscription failed: {str(e)}")
             st.error("Failed to send confirmation email.")
 
     else:
+        print("⚠️ EMPTY INPUT")
         logger.warning("User submitted empty form")
         st.error("Please enter both course code and email.")
