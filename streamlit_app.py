@@ -43,7 +43,7 @@ init_db()
 # ================================
 # STREAMLIT UI
 # ================================
-st.title("Student Exam Reminder v5")
+st.title("Student Exam Reminder v4")
 
 course = st.text_input("Course Code")
 email = st.text_input("Email")

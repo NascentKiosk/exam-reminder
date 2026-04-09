@@ -1,11 +1,15 @@
 import streamlit as st
 import requests
 import os
+from dotenv import load_dotenv
+load_dotenv()
 
 st.title("Exam Reminder Monitoring")
 
+
 APP_ID = os.getenv("APPINSIGHTS_APP_ID")
 ACCESS_TOKEN = os.getenv("AZURE_ACCESS_TOKEN")
+st.write("APP_ID:", APP_ID)
 
 headers = {
     "Authorization": f"Bearer {ACCESS_TOKEN}"
