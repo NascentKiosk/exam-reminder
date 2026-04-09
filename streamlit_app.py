@@ -43,7 +43,7 @@ init_db()
 # ================================
 # STREAMLIT UI
 # ================================
-st.title("Student Exam Reminder v7")
+st.title("Student Exam Reminder v6")
 
 course = st.text_input("Course Code")
 email = st.text_input("Email")
@@ -92,5 +92,5 @@ Good luck with your studies!
         print("⚠️ EMPTY INPUT")
         logger.warning("User submitted empty form")
         st.error("Please enter both course code and email.")
-        
+
 raise Exception("Test alert")
