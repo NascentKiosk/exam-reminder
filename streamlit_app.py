@@ -93,4 +93,3 @@ Good luck with your studies!
         logger.warning("User submitted empty form")
         st.error("Please enter both course code and email.")
 
-raise Exception("Test alert")
