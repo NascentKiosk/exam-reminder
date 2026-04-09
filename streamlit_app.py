@@ -10,7 +10,7 @@ from app.core.notifier import send_email
 from app.core.database import init_db
 from app.modules.subscriptions.service import subscribe
 
-print("APP STARTED - NEW VERSION")
+
 
 logger = logging.getLogger(__name__)
 
@@ -20,14 +20,14 @@ if os.getenv("APPLICATIONINSIGHTS_CONNECTION_STRING"):
             connection_string=os.getenv("APPLICATIONINSIGHTS_CONNECTION_STRING")
         )
     )
-
+logger.info("APP STARTED - NEW VERSION")
 logger.setLevel(logging.INFO)
 logger.info(" Streamlit app starting...")
 
 # 👇 VERY IMPORTANT
 init_db()
 
-print("APP STARTED - NEW VERSION")
+
 st.title("Student Exam Reminder v5")
 
 
