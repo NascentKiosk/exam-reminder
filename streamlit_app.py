@@ -27,7 +27,7 @@ logger.info(" Streamlit app starting...")
 # 👇 VERY IMPORTANT
 init_db()
 
-
+print("APP STARTED - NEW VERSION")
 st.title("Student Exam Reminder v5")
 
 
